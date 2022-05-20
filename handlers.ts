@@ -41,17 +41,17 @@ module.exports.event = (client, Discord) =>{
     }
     ['client', 'guild'].forEach(e => load_dir(e));
 
-    const load_dis = (dirs) =>{
-        const events_files = fs.readdirSync(`./events/distube/${dirs}`).filter(file => file.endsWith('.ts'));
+    const load_dis = () => {
+        const events_files = fs.readdirSync(`./events/distube/`).filter(file => file.endsWith('.ts'));
 
         for(const file of events_files){
             console.log(file)
-            const event = require(`./events/distube/${dirs}/${file}`);
+            const event = require(`./events/distube/${file}`);
             const event_name = file.split('.')[0];
             client.distube.on(event_name, event.bind(null, Discord, client));
         }
     }
-    ['core'].forEach(e => load_dis(e));
+    load_dis()
 
 }
 

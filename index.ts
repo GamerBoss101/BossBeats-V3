@@ -9,7 +9,8 @@ const client = new Discord.Client({
 });
 
 // Module Imports
-const { Token } = require("./config.ts");
+const { Token, spotKey, spotID } = require("./config.ts");
+const Embeds = require("./util/embeds.ts");
 const { SpotifyPlugin } = require('@distube/spotify')
 const { SoundCloudPlugin } = require('@distube/soundcloud')
 const { YtDlpPlugin } = require('@distube/yt-dlp')
@@ -17,19 +18,30 @@ const { YtDlpPlugin } = require('@distube/yt-dlp')
 // Bot Stuff
 client.commands = new Discord.Collection();
 client.distube = new DisTube(client, {
+    searchSongs: 0,
+	searchCooldown: 30,
+	leaveOnEmpty: false,
+	emptyCooldown: 0,
+	leaveOnFinish: false,
     leaveOnStop: false,
     emitNewSongOnly: true,
     emitAddSongWhenCreatingQueue: false,
     emitAddListWhenCreatingQueue: false,
     plugins: [
-      new SpotifyPlugin({
-        emitEventsAfterFetching: true
-      }),
-      new SoundCloudPlugin(),
-      new YtDlpPlugin()
+        new SpotifyPlugin({ 
+            parallel: true, 
+            emitEventsAfterFetching: true,
+            api: { clientId: spotID, clientSecret: spotKey }
+        }),
+        new SoundCloudPlugin(),
+        new YtDlpPlugin()
     ],
     youtubeDL: false
-})
+});
+
+client.map = new Discord.Collection();
+client.embeds = new Embeds();
+
 
 // Handlers
 const HAND = require(`./handlers.ts`);
@@ -43,14 +55,14 @@ HAND.command(client, Discord)
 })*/
   
 // Bot Login
-client.login("ODAwNzYwMzk0NzcwNTQ2Njk4.GrsBG7.gNAwKGzq3H3GSmndjeNBidonnYySNG7t4jyK74").catch(() => console.log(new Error("Invalid Discord Bot Token Provided!")));
+client.login(Token).catch(() => console.log(new Error("Invalid Discord Bot Token Provided!")));
 
 // PROCESS
 
 process.on('uncaughtException', function (err) {
-    console.log('uncaughtException: ' + err)
+    console.log(err)
 })
 
 process.on('unhandledRejection', (err) => {
-    console.log('unhandledRejection: ' + err)
+    console.log(err)
 })

@@ -1,5 +1,4 @@
 // @ts-nocheck
-const moment = require('moment');
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -10,15 +9,20 @@ module.exports = {
     .setName('play')
     .setDescription('Play Music')
     .addStringOption(option => 
-        option.setName('input').setDescription('name or link of Music').setRequired(true)
+        option.setName('song').setDescription('name or link of Music').setRequired(true)
     ),
     async execute(Discord, client, interaction) {
 
-        if(!interaction.member.voice.channel) return console.log('No Voice')
+        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
+        
+        client.map.set(interaction.user.id, interaction)
 
-        client.distube.play(interaction.member.voice.channel, interaction.options.getString('input'), {
+        client.distube.play(interaction.member.voice.channel, interaction.options.getString('song'), {
             member: interaction.member,
             textChannel: interaction.channel
         })
+
+        interaction.deferReply({ ephemeral: true });
+
     }
 }
