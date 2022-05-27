@@ -9,7 +9,7 @@ const { log } = require('./util/helper.ts')
 
 const rest = new REST({ version: '9' }).setToken(Token);
 
-const Categories = ["music"];
+const Categories = ["music", "other"];
 const commandss = [];
 
 module.exports.command = (client, Discord) => {

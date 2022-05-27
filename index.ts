@@ -10,6 +10,7 @@ const client = new Discord.Client({
 
 // Module Imports
 const { Token, spotKey, spotID } = require("./config.ts");
+const { log } = require("./util/helper.ts")
 const Embeds = require("./util/embeds.ts");
 const { SpotifyPlugin } = require('@distube/spotify')
 const { SoundCloudPlugin } = require('@distube/soundcloud')
@@ -60,9 +61,9 @@ client.login(Token).catch(() => console.log(new Error("Invalid Discord Bot Token
 // PROCESS
 
 process.on('uncaughtException', function (err) {
-    console.log(err)
+    log(err)
 })
 
 process.on('unhandledRejection', (err) => {
-    console.log(err)
+    log(err)
 })
