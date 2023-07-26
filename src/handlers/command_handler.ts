@@ -6,7 +6,7 @@ module.exports = (client, Discord) => {
 
     const Categories = ["music", "other"];
     Categories.forEach((Category) => {
-        const comandFiles = fs.readdirSync(`./commands/${Category}`).filter(file => file.endsWith('.js') || file.endsWith('.ts') || file.endsWith('.mjs'));
+        const comandFiles = fs.readdirSync(`./src/commands/${Category}`).filter(file => file.endsWith('.js') || file.endsWith('.ts') || file.endsWith('.mjs'));
         for(const file of comandFiles){
             const command = require(`../commands/${Category}/${file}`);
 

@@ -11,7 +11,7 @@ module.exports.post = (client) => {
 
     const Categories = ["music", "other"];
     Categories.forEach((Category) => {
-        const comandFiles = fs.readdirSync(`./commands/${Category}`).filter(file => file.endsWith('.ts'));
+        const comandFiles = fs.readdirSync(`./src/commands/${Category}`).filter(file => file.endsWith('.ts'));
         for(const file of comandFiles) {
             const command = require(`../commands/${Category}/${file}`);
 

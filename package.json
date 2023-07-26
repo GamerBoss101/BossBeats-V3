@@ -2,7 +2,7 @@
   "name": "bossbeats",
   "version": "3.0.0",
   "description": "Discord Music Bot",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "start": "node ."
   },

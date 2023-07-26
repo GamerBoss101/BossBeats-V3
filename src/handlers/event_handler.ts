@@ -6,7 +6,7 @@ module.exports = (client, Discord) =>{
     const Table = new Ascii("BossBeats EVENTS");
 
     const load_dir = (dirs) =>{
-        const events_files = fs.readdirSync(`./events/bot/${dirs}`).filter(file => file.endsWith('.ts'));
+        const events_files = fs.readdirSync(`./src/events/bot/${dirs}`).filter(file => file.endsWith('.ts'));
 
         for(const file of events_files){
             const event = require(`../events/bot/${dirs}/${file}`);
@@ -18,7 +18,7 @@ module.exports = (client, Discord) =>{
     ['client', 'guild'].forEach(e => load_dir(e));
 
     const load_dis = () => {
-        const events_files = fs.readdirSync(`./events/distube/`).filter(file => file.endsWith('.ts'));
+        const events_files = fs.readdirSync(`./src/events/distube/`).filter(file => file.endsWith('.ts'));
 
         for(const file of events_files){
             const event = require(`../events/distube/${file}`);
