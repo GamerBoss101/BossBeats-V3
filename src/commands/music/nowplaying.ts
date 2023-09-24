@@ -1,17 +1,46 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class NowPlayingCommand extends BotCommand {
+    constructor() {
+        super("nowplaying", "Now Playing Command");
+    }
 
-const { progressbar, convertTime } = require('../../util/helper.ts')
+    progressbar(total: number, current: number, size: number, line: string, slider: any) {
+        if (current > total) {
+            const bar = line.repeat(size + 2);
+            return bar;
+        } else {
+            const percentage = current / total;
+            const progress = Math.round((size * percentage));
+            const emptyProgress = size - progress;
+            const progressText = line.repeat(progress).replace(/.$/, slider);
+            const emptyProgressText = line.repeat(emptyProgress);
+            const bar = progressText + emptyProgressText;
+            return bar;
+        }
+    }
 
-module.exports = {
-    name: 'nowplaying',
-    description: "Gets the current song playing",
-    data: new SlashCommandBuilder()
-    .setName('nowplaying')
-    .setDescription('Gets the current song playing'),
-    async execute(Discord, client, interaction) {
+    convertTime(duration: number) {
+        let seconds: any = (duration / 1000) % 60;
+        let minutes: any = (duration / (1000 * 60)) % 60;
+        let hours: any = (duration / (1000 * 60 * 60)) % 24;
+    
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+    
+        if (duration < 3600000) {
+            return minutes + ":" + seconds ;
+        } else {
+            return hours + ":" + minutes + ":" + seconds ;
+        }
+    }
+    
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 
@@ -28,8 +57,8 @@ module.exports = {
         let embed = new Discord.EmbedBuilder()
         .setTitle(`🎵 Now Playing`)
         .setThumbnail(currentSong.thumbnail)
-        .setDescription(`[${currentSong.name}](${currentSong.url}) - \`[${currentSong.formattedDuration}]\`` + "\n\n" + `\`${convertTime(current)} / ${convertTime(total)}\``)
-        .addFields({ name:"\u200b", value: progressbar(total, current, size, line, slider)})
+        .setDescription(`[${currentSong.name}](${currentSong.url}) - \`[${currentSong.formattedDuration}]\`` + "\n\n" + `\`${this.convertTime(current)} / ${this.convertTime(total)}\``)
+        .addFields({ name:"\u200b", value: this.progressbar(total, current, size, line, slider)})
         .setFooter({ text: `Request by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
         interaction.reply({ embeds: [embed] });
 

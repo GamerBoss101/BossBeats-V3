@@ -1,26 +1,38 @@
-const fs = require('fs');
-const Ascii = require("ascii-table");
+import fs from "fs";
+import path from "path";
 
-module.exports = (client, Discord) => {
-    const Table = new Ascii("BossBeats COMMANDS");
+import { REST, Routes, SlashCommandBuilder } from "discord.js";
+import BotClient from "../types/BotClient";
+import BotCommand from "../types/BotCommand";
 
-    const Categories = ["music", "other"];
-    Categories.forEach((Category) => {
-        const comandFiles = fs.readdirSync(`./src/commands/${Category}`).filter(file => file.endsWith('.js') || file.endsWith('.ts') || file.endsWith('.mjs'));
-        for(const file of comandFiles){
-            const command = require(`../commands/${Category}/${file}`);
+// @ts-ignore
+const rest = new REST({ version: '10' }).setToken(process.env.BossBeats);
 
-            if (!command.name) {
-                Table.addRow(command.name, "❌ Failed to load");
-            }else if(command.enabled == false) {
-                Table.addRow(command.name, "❌ Command Disabled");
-            } else {
-                command.category = Category;
-                client.commands.set(command.name, command)
-                if(command.name) Table.addRow(command.name, "✅ Succesfully loaded!");
-            }
-        }
+export default (Discord: any, client: BotClient) => {
+    fs.readdirSync(path.join(__dirname, "../commands")).forEach((dir: string) => {
+        fs.readdirSync(path.join(__dirname, `../commands/${dir}`)).forEach( async(file: string) => {
+            let command: BotCommand = new (await( await import(path.join(__dirname, `../commands/${dir}/${file}`)))).default();
+            client.commands.set(command.name, command);
+        });       
+    });
+}
+
+export async function post(client: BotClient) {
+    let botCommands: Array<SlashCommandBuilder> = [];
+    client.commands.forEach((value, key) => {
+        botCommands.push(value.data);
     });
 
-    console.log(Table.toString());
+    try {
+        client.guilds.cache.forEach(async (guild) => {
+            await rest.put(
+                // @ts-ignore
+                Routes.applicationGuildCommands(client.user.id, guild.id),
+                { body: botCommands }
+            );
+            client.logger.log(`&bPosted (/) Commands for &f${guild.name}`);
+        });
+    } catch (error) {
+        console.error(error);
+    }
 }

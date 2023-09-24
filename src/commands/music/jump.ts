@@ -1,22 +1,17 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class JumpCommand extends BotCommand {
+    constructor() {
+        super("jump", "Jumps to a song in the queue");
+    }
 
-module.exports = {
-    name: 'jump',
-    description: "Jumps to Song in Queue",
-    data: new SlashCommandBuilder()
-    .setName('jump')
-    .setDescription('Jumps to Song in Queue')    
-    .addNumberOption(option => 
-        option.setName('number').setDescription('Song Number').setRequired(true)
-    ),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
         const songNumber = interaction.options.getNumber('number');
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
-
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 

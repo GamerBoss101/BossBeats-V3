@@ -1,8 +1,9 @@
+import BotClient from "../../types/BotClient";
 
-
-module.exports = async (Discord, client, channel, e) => {
+export default async(Discord: any, client: BotClient,  channel: any, error: any) => {
 
     const embed = new Discord.EmbedBuilder()
-    .setDescription(`❌ | There was an Error\n ${e}`)
+    .setDescription(`❌ | There was an Error\n ${error}`)
     channel.send({ embeds: [embed] })
+
 }

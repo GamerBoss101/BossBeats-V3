@@ -1,10 +1,10 @@
+import BotClient from "../../types/BotClient";
 
-
-module.exports = async (Discord, client, queue) => {
+export default async(Discord: any, client: BotClient, queue: any) => {
 
     const embed = new Discord.EmbedBuilder()
-    .setDescription(`✅ | **Leave** the voice channel.\nThank you for using ${client.user.username}!`)
-    .setFooter({ text: client.user.username, iconURL: client.user.displayAvatarURL() });
+    .setDescription(`✅ | **Leave** the voice channel.\nThank you for using ${client?.user?.username}!`)
+    .setFooter({ text: client?.user?.username, iconURL: client?.user?.displayAvatarURL() });
     queue.textChannel.send({ embeds: [embed] });
 
 }

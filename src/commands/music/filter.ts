@@ -1,22 +1,22 @@
 // @ts-nocheck
 
-const { SlashCommandBuilder } = require('discord.js');
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-module.exports = {
-    name: 'filter',
-    description: "Music Filter",
-    data: new SlashCommandBuilder()
-    .setName('filter')
-    .setDescription('Music Filter')    
-    .addStringOption(option => 
-        option.setName('name').setDescription('Name of Filter').setRequired(true)
-    ),
-    async execute(Discord, client, interaction) {
+export default class FilterCommand extends BotCommand {
+    constructor() {
+        super("filter", "Filter Command");
+        super.data.addStringOption(option => 
+            option.setName('name').setDescription('Name of Filter').setRequired(true)
+        );
+    }
+
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
         const string = interaction.options.getString('name');
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
-
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 

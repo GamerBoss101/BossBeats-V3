@@ -1,5 +1,6 @@
+import BotClient from "../../types/BotClient";
 
-module.exports = async (Discord, client, queue, song) => {
+export default async(Discord: any, client: BotClient,  queue: any, song: any) => {
 
     let playSong = new Discord.EmbedBuilder()
     .setThumbnail(song.thumbnail)

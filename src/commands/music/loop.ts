@@ -1,27 +1,24 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class LoopCommand extends BotCommand {
+    constructor() {
+        super("loop", "Loop Command");
+        super.data.addStringOption(option =>
+            option.setName('type')
+                .setDescription('The type of loop')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Quene', value: 'loop_quene' },
+                    { name: 'Song', value: 'loop_song' },
+                    { name: 'Off', value: 'loop_off' },
+                )
+        );
+    }
 
-module.exports = {
-    name: 'loop',
-    description: "Loops Music",
-    data: new SlashCommandBuilder()
-    .setName('loop')
-    .setDescription('Loops Music')
-    .addStringOption(option =>
-		option.setName('type')
-			.setDescription('The type of loop')
-			.setRequired(true)
-			.addChoices(
-				{ name: 'Quene', value: 'loop_quene' },
-				{ name: 'Song', value: 'loop_song' },
-				{ name: 'Off', value: 'loop_off' },
-			)
-    ),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
-
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 

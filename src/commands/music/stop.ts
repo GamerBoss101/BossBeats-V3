@@ -1,27 +1,24 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class StopCommand extends BotCommand {
+    constructor() {
+        super("stop", "Stop Command");
+    }
 
-module.exports = {
-    name: 'stop',
-    description: "Stops Music",
-    data: new SlashCommandBuilder()
-    .setName('stop')
-    .setDescription('Stops Music'),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
 
         const queue = client.distube.getQueue(interaction);
         if(!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
+
+        client.distube.stop(interaction);
 
         const embed = new Discord.EmbedBuilder()
         .setDescription(` Successfully **Stopped** the music.`)
         .setFooter({ text: `Request by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
 
-        client.distube.stop(interaction);
-
-        interaction.reply({ embeds: [embed] });
-
+        await interaction.reply({ embeds: [embed] });
     }
 }

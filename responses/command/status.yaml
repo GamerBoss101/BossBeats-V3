@@ -1,0 +1,11 @@
+color: "Green"
+author:
+  name: "{bot_name}"
+  iconUrl: "{bot_avatar}"
+description: "{bot_stats}"
+fields: 
+  - { name: "Uptime", value: "{uptime}", inline: false }
+  - { name: "Invite", value: "[Link]({link})", inline: false }
+timestamp: true
+footer:
+  text: "Requested By {interaction_user_username}"

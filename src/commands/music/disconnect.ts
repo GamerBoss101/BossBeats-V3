@@ -1,16 +1,14 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class DisconnectCommand extends BotCommand {
+    constructor() {
+        super("disconnect", "Disconnect Command");
+    }
 
-module.exports = {
-    name: 'disconnect',
-    description: "disconnect from vc",
-    data: new SlashCommandBuilder()
-    .setName('disconnect')
-    .setDescription("disconnect from vc"),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
 
         const queue = client.distube.getQueue(interaction);
 
@@ -25,7 +23,6 @@ module.exports = {
         .setDescription(`Successfully **Disconnected** from the voice channel.`)
         .setFooter({ text: `Request by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
 
-        interaction.reply({ embeds: [embed] });
-
+        await interaction.reply({ embeds: [embed] });
     }
 }

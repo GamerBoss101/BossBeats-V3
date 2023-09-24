@@ -1,48 +1,50 @@
-const fs = require('fs');
-const Ascii = require("ascii-table");
+import fs from "fs";
+import path from "path";
+import ms from "ms";
 
-module.exports = (client, Discord) =>{
+import BotClient from "../types/BotClient";
 
-    const Table = new Ascii("BossBeats EVENTS");
+let Events: Array<string> = [];
 
-    const load_dir = (dirs) =>{
-        const events_files = fs.readdirSync(`./src/events/bot/${dirs}`).filter(file => file.endsWith('.ts'));
+function isEvent(file: string): boolean {
+    return file.endsWith(".js");
+}
 
-        for(const file of events_files){
-            const event = require(`../events/bot/${dirs}/${file}`);
-            const event_name = file.split('.')[0];
-            client.on(event_name, event.bind(null, Discord, client));
-            Table.addRow(event_name, "✅ Succesfully loaded!");
-        }
-    }
-    ['client', 'guild'].forEach(e => load_dir(e));
+function ScanDir(Discord: any, client: BotClient, dir: string) {
+    fs.readdirSync(dir).forEach((file: string) => {
+        if(isEvent(file)) return loadEvent(Discord, client, `${dir}/${file}`);
+        else return ScanDir(Discord, client, `${dir}/${file}`);
+    });
+}
 
-    const load_dis = () => {
-        const events_files = fs.readdirSync(`./src/events/distube/`).filter(file => file.endsWith('.ts'));
+async function loadEvent(Discord: any, client: BotClient, file: string): Promise<void> {
+    const event = await import(file);
+    let event_name: any = file.split("/");
+    event_name = event_name[event_name.length - 1].split(".")[0];
+    client.on(event_name, event.default.bind(null, Discord, client));
+    Events.push(event_name);
+}
 
-        for(const file of events_files){
-            const event = require(`../events/distube/${file}`);
-            const event_name = file.split('.')[0];
-            
-            client.distube.on(event_name, event.bind(null, Discord, client));
-            Table.addRow(event_name, "✅ Succesfully loaded!");
-        }
-    }
-    load_dis()
+function ScanDirDistube(Discord: any, client: BotClient, dir: string) {
+    fs.readdirSync(dir).forEach((file: string) => {
+        if(isEvent(file)) return loadEventDistube(Discord, client, `${dir}/${file}`);
+        else return ScanDirDistube(Discord, client, `${dir}/${file}`);
+    });
+}
 
-    /*
-    const load_custom = () => {
-        const events_files = fs.readdirSync(`./events/custom/`).filter(file => file.endsWith('.ts'));
+async function loadEventDistube(Discord: any, client: BotClient, file: string): Promise<void> {
+    const event = await import(file);
+    let event_name: any = file.split("/");
+    event_name = event_name[event_name.length - 1].split(".")[0];
+    client.distube.on(event_name, event.default.bind(null, Discord, client));
+    Events.push(event_name);
+}
 
-        for(const file of events_files){
-            const event = require(`../events/custom/${file}`);
-            const event_name = file.split('.')[0];
-            client.on(event_name, event.bind(null, Discord, client));
-            Table.addRow(event_name, "✅ Succesfully loaded!");
-        }
-    }
-    load_custom()
-    */
-
-    console.log(Table.toString());
+export default async(Discord: any, client: BotClient) => { 
+    ScanDir(Discord, client, path.join(__dirname, `../events/bot`));
+    ScanDirDistube(Discord, client, path.join(__dirname, `../events/distube`));
+    await client.util.wait(ms("5s"));
+    Events.forEach((event: string) => {
+        client.logger.log(`&6${event} &a- Event Loaded`);
+    });
 }

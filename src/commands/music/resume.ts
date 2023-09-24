@@ -1,29 +1,26 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class ResumeCommand extends BotCommand {
+    constructor() {
+        super("resume", "Resume Command");
+    }
 
-module.exports = {
-    name: 'resume',
-    description: "Resumes Music",
-    data: new SlashCommandBuilder()
-    .setName('resume')
-    .setDescription('Resumes Music'),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
 
         const queue = client.distube.getQueue(interaction);
         if(!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 
         if(!queue.paused) return interaction.reply( { content: `❌ | The queue is being played.` });
 
+        client.distube.resume(interaction);
+
         const embed = new Discord.EmbedBuilder()
         .setDescription(`▶ | Successfully **Resumed** a song.`)
         .setFooter({ text: `Request by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
 
-        client.distube.resume(interaction);
-
-        interaction.reply({ embeds: [embed] });
-
+        await interaction.reply({ embeds: [embed] });
     }
 }

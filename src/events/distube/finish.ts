@@ -1,8 +1,10 @@
+import BotClient from "../../types/BotClient";
 
-module.exports = async (Discord, client, queue) => {
+export default async(Discord: any, client: BotClient,  queue: any) => {
 
     let playSong = new Discord.EmbedBuilder()
     .setDescription(`No more song in queue`)
 
     queue.textChannel.send({ embeds: [playSong] })
+
 }

@@ -1,23 +1,20 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class ShuffleCommand extends BotCommand {
+    constructor() {
+        super("shuffle", "Shuffle Command");
+    }
 
-module.exports = {
-    name: 'shuffle',
-    description: "Shuffles the Queue",
-    data: new SlashCommandBuilder()
-    .setName('shuffle')
-    .setDescription('Shuffles the Queue'),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
-
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 
         client.distube.shuffle(interaction);
 
         return interaction.reply({ content: `🔀 | Shuffled the Queue` });
-
     }
 }

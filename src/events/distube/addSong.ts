@@ -1,10 +1,11 @@
+import BotClient from "../../types/BotClient";
 
-module.exports = async (Discord, client, queue, song) => {
+export default async(Discord: any, client: BotClient, queue: any, song: any) => {
 
     let addSong = new Discord.EmbedBuilder()
     .setDescription(` Your Song has been added \n[${song.name}](${song.url}) - \`[${song.formattedDuration}]\``)
     .setThumbnail(song.thumbnail)
 
-    await queue.textChannel.send({ embeds: [addSong], ephemeral: true })
+    await queue.textChannel.send({ embeds: [addSong] })
 
 }

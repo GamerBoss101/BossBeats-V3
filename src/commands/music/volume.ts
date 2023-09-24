@@ -1,28 +1,26 @@
-// @ts-nocheck
+import BotClient from "../../types/BotClient";
+import BotCommand from "../../types/BotCommand";
 
-const { SlashCommandBuilder } = require('discord.js');
+export default class VolumeCommand extends BotCommand {
+    constructor() {
+        super("volume", "Volume Command");
+        super.data.addNumberOption(option => 
+            option.setName('number').setDescription('Volume Level').setRequired(true)
+        );
+    }
 
-module.exports = {
-    name: 'volume',
-    description: "Sets Music Volume",
-    data: new SlashCommandBuilder()
-    .setName('volume')
-    .setDescription('Sets Music Volume')    
-    .addNumberOption(option => 
-        option.setName('number').setDescription('Volume Level').setRequired(true)
-    ),
-    async execute(Discord, client, interaction) {
+    async execute(Discord: any, client: BotClient, interaction: any) {
 
-        const integer = interaction.options.getNumber('number');
+        const volume = interaction.options.getNumber('number');
 
-        if(!interaction.member.voice.channel) return client.embeds.noVoice(Discord, interaction);
+        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
 
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 
         try {
-            queue.setVolume(integer)
-            interaction.reply({ content: `❌ | Volume set to \`${integer.toString()}\`` });
+            queue.setVolume(volume)
+            interaction.reply({ content: `:white_check_mark: | Volume set to \`${volume.toString()}\`` });
         } catch (e) {
             interaction.reply({ content: `${e}` })
         }
