@@ -10,7 +10,7 @@ export default class PreviousCommand extends BotCommand {
 
         interaction.deferReply({ ephemeral: true });
 
-        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        if(!interaction.member.voice.channel) return interaction.reply({ embeds: [client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"))] });
         
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });

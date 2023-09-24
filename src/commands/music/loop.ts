@@ -4,7 +4,7 @@ import BotCommand from "../../types/BotCommand";
 export default class LoopCommand extends BotCommand {
     constructor() {
         super("loop", "Loop Command");
-        super.data.addStringOption(option =>
+        this.data.addStringOption(option =>
             option.setName('type')
                 .setDescription('The type of loop')
                 .setRequired(true)
@@ -18,7 +18,7 @@ export default class LoopCommand extends BotCommand {
 
     async execute(Discord: any, client: BotClient, interaction: any) {
 
-        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        if(!interaction.member.voice.channel) return interaction.reply({ embeds: [client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"))] });
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });
 

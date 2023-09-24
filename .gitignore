@@ -127,3 +127,4 @@ dist
 .pnp.*
 config.ts
 bun.lockb
+pnpm-lock.yaml

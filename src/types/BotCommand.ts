@@ -26,7 +26,7 @@ export default class BotCommand {
     }
 
     async execute(Discord: any, client: BotClient, interaction: any): Promise<any> {
-        interaction.reply({ content: "This Command is not Implemented Yet!", ephemeral: true })
+        await interaction.reply({ content: "This Command is not Implemented Yet!", ephemeral: true })
     }
 
 }

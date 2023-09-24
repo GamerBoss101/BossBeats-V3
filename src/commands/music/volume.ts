@@ -4,7 +4,7 @@ import BotCommand from "../../types/BotCommand";
 export default class VolumeCommand extends BotCommand {
     constructor() {
         super("volume", "Volume Command");
-        super.data.addNumberOption(option => 
+        this.data.addNumberOption(option => 
             option.setName('number').setDescription('Volume Level').setRequired(true)
         );
     }
@@ -13,7 +13,7 @@ export default class VolumeCommand extends BotCommand {
 
         const volume = interaction.options.getNumber('number');
 
-        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        if(!interaction.member.voice.channel) return interaction.reply({ embeds: [client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"))] });
 
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });

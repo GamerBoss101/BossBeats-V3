@@ -6,7 +6,7 @@ import BotCommand from "../../types/BotCommand";
 export default class FilterCommand extends BotCommand {
     constructor() {
         super("filter", "Filter Command");
-        super.data.addStringOption(option => 
+        this.data.addStringOption(option => 
             option.setName('name').setDescription('Name of Filter').setRequired(true)
         );
     }
@@ -15,7 +15,7 @@ export default class FilterCommand extends BotCommand {
 
         const string = interaction.options.getString('name');
 
-        if(!interaction.member.voice.channel) return client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"));
+        if(!interaction.member.voice.channel) return interaction.reply({ embeds: [client.util.buildEmbed(client.formatter.format("./responses/user/novoice.yaml"))] });
         
         const queue = client.distube.getQueue(interaction);
         if (!queue) return interaction.reply({ content: `❌ | There is no music playing!` });

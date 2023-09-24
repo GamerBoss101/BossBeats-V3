@@ -27,10 +27,9 @@ client.login(process.env.BossBeats).then(() => client.logger.log("&aBot Online!"
 
 // PROCESS
 process.on('uncaughtException', (err) => {
-    console.log(err); 
     client.logger.log("&4" + err);
 });
+
 process.on('unhandledRejection', (err) => {
-    console.log(err); 
     client.logger.log("&4" + err);
 });
