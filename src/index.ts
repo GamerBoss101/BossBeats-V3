@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
+import mongoose from "mongoose";
 import Discord from "discord.js";
 import BotClient from "./types/BotClient";
 
@@ -23,13 +24,11 @@ const client = new BotClient({
     });
 })();
 
-client.login(process.env.BossBeats).then(() => client.logger.log("&aBot Online!")).catch(() => console.log(new Error("Invalid Discord Bot Token Provided!")));
+mongoose.set('strictQuery', true);
+mongoose.connect(`${process.env.URI}`).then(() => { client.logger.log("&aConnected to Database!") });
+client.login(process.env.Token).then(() => client.logger.log("&aBot Online!")).catch(() => console.log(new Error("Invalid Discord Bot Token Provided!")));
 
 // PROCESS
-process.on('uncaughtException', (err) => {
-    client.logger.log("&4" + err);
-});
+process.on('uncaughtException', (err) => { client.logger.log("&4" + err); });
 
-process.on('unhandledRejection', (err) => {
-    client.logger.log("&4" + err);
-});
+process.on('unhandledRejection', (err) => { client.logger.log("&4" + err); });

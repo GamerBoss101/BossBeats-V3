@@ -6,7 +6,7 @@ import BotClient from "../types/BotClient";
 import BotCommand from "../types/BotCommand";
 
 // @ts-ignore
-const rest = new REST({ version: '10' }).setToken(process.env.BossBeats);
+const rest = new REST({ version: '10' }).setToken(process.env.Token);
 
 export default (Discord: any, client: BotClient) => {
     fs.readdirSync(path.join(__dirname, "../commands")).forEach((dir: string) => {

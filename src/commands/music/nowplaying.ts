@@ -22,9 +22,12 @@ export default class NowPlayingCommand extends BotCommand {
     }
 
     convertTime(duration: number) {
-        let seconds: any = (duration / 1000) % 60;
-        let minutes: any = (duration / (1000 * 60)) % 60;
-        let hours: any = (duration / (1000 * 60 * 60)) % 24;
+        // @ts-ignore
+        let seconds: any = parseInt((duration / 1000) % 60);
+        // @ts-ignore
+        let minutes: any = parseInt((duration / (1000 * 60)) % 60);
+        // @ts-ignore
+        let hours: any = parseInt((duration / (1000 * 60 * 60)) % 24);
     
         hours = (hours < 10) ? "0" + hours : hours;
         minutes = (minutes < 10) ? "0" + minutes : minutes;
